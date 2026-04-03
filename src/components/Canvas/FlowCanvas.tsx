@@ -12,7 +12,6 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useCallback, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { SmartStepEdge } from '@tisoap/react-flow-smart-edge';
 import { AssetNode } from '../NodeTypes/AssetNode';
 import { ZoneNode } from '../NodeTypes/ZoneNode';
 import { useAssessorStore } from '../../store/useAssessorStore';
@@ -22,9 +21,6 @@ const nodeTypes = {
   zoneNode: ZoneNode
 };
 
-const edgeTypes = {
-  smart: SmartStepEdge
-};
 
 const FlowInner = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -88,27 +84,32 @@ const FlowInner = () => {
   );
 
   return (
-    <div ref={wrapperRef} className="h-full w-full" onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
+    <div
+      ref={wrapperRef}
+      className="h-full w-full bg-slate-100 cursor-crosshair"
+      onDrop={onDrop}
+      onDragOver={(event) => event.preventDefault()}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeDragStop={onNodeDragStop}
         onSelectionChange={({ nodes: n, edges: e }) => setSelection(n.map((item) => item.id), e.map((item) => item.id))}
         defaultEdgeOptions={{
-          type: 'smart',
-          style: { stroke: '#94a3b8', strokeWidth: 1.6 }
+          type: 'step',
+          style: { stroke: '#64748b', strokeWidth: 1.8 }
         }}
+        connectionLineStyle={{ stroke: '#334155', strokeWidth: 1.8 }}
         fitView
         selectionMode={SelectionMode.Partial}
       >
         <MiniMap />
         <Controls />
-        <Background id="dot-grid" color="#cbd5e1" gap={24} size={1.2} variant={BackgroundVariant.Dots} />
+        <Background id="dot-grid" color="#94a3b8" gap={24} size={1.4} variant={BackgroundVariant.Dots} />
       </ReactFlow>
     </div>
   );

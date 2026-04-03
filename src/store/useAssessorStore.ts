@@ -118,7 +118,7 @@ export const useAssessorStore = create<AssessorState>((set, get) => ({
       edges: addEdge(
         {
           ...connection,
-          type: 'smart',
+          type: 'step',
           markerEnd: { type: 'arrowclosed' },
           style: { stroke: '#94a3b8' }
         },
