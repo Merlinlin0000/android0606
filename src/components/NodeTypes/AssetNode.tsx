@@ -1,5 +1,5 @@
 import { Database, Monitor, Network, Server, ShieldCheck } from 'lucide-react';
-import { NodeProps } from '@xyflow/react';
+import { Handle, NodeProps, Position } from '@xyflow/react';
 import { NodeData } from '../../types';
 
 const iconMap = {
@@ -15,9 +15,12 @@ export const AssetNode = ({ data, selected }: NodeProps<NodeData>) => {
 
   return (
     <div
-      className={`rounded-xl border bg-white shadow-sm min-w-40 px-3 py-2 ${selected ? 'ring-2 ring-sky-300' : ''}`}
+      className={`relative rounded-xl border bg-white shadow-sm min-w-40 px-3 py-2 ${selected ? 'ring-2 ring-sky-300' : ''}`}
       style={{ borderColor: '#cbd5e1' }}
     >
+      <Handle type="target" position={Position.Left} className="!h-2.5 !w-2.5 !bg-slate-400" />
+      <Handle type="source" position={Position.Right} className="!h-2.5 !w-2.5 !bg-slate-400" />
+
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 text-slate-600" />
         <p className="text-sm font-semibold text-slate-700">{data.name}</p>
