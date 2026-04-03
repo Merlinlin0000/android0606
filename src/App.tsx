@@ -1,5 +1,6 @@
 import { Plus, Save, Upload, FileDown } from 'lucide-react';
 import { useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { FlowCanvas } from './components/Canvas/FlowCanvas';
 import { InspectorPanel } from './components/Inspector/InspectorPanel';
 import { AssetPool } from './components/Sidebar/AssetPool';
@@ -11,14 +12,16 @@ const App = () => {
   useCanvasHotkeys();
 
   const canvasHostRef = useRef<HTMLDivElement>(null);
-  const { addZoneNode, saveZoneTemplate, loadZoneTemplate, clearCanvas, nodes, assets } = useAssessorStore((state) => ({
+  const { addZoneNode, saveZoneTemplate, loadZoneTemplate, clearCanvas, nodes, assets } = useAssessorStore(
+    useShallow((state) => ({
     addZoneNode: state.addZoneNode,
     saveZoneTemplate: state.saveZoneTemplate,
     loadZoneTemplate: state.loadZoneTemplate,
     clearCanvas: state.clearCanvas,
     nodes: state.nodes,
     assets: state.assets
-  }));
+    }))
+  );
 
   const onExport = async () => {
     if (!canvasHostRef.current) return;

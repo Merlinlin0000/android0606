@@ -1,16 +1,19 @@
 import { ChangeEvent } from 'react';
 import { Download, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 import { useAssessorStore } from '../../store/useAssessorStore';
 import { downloadSurveyTemplate, parseAssetsFromExcel } from '../../utils/excel';
 
 export const AssetPool = () => {
-  const { assets, search, setSearch, importAssets } = useAssessorStore((state) => ({
+  const { assets, search, setSearch, importAssets } = useAssessorStore(
+    useShallow((state) => ({
     assets: state.assets,
     search: state.search,
     setSearch: state.setSearch,
     importAssets: state.importAssets
-  }));
+    }))
+  );
 
   const filtered = assets.filter(
     (asset) =>

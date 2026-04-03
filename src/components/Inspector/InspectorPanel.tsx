@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useAssessorStore } from '../../store/useAssessorStore';
 
 export const InspectorPanel = () => {
-  const { assets, selectedNodeIds, updateAsset } = useAssessorStore((state) => ({
+  const { assets, selectedNodeIds, updateAsset } = useAssessorStore(
+    useShallow((state) => ({
     assets: state.assets,
     selectedNodeIds: state.selectedNodeIds,
     updateAsset: state.updateAsset
-  }));
+    }))
+  );
 
   const selectedAsset = useMemo(() => {
     const id = selectedNodeIds[0]?.replace('node-', '');

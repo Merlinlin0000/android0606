@@ -138,7 +138,21 @@ export const useAssessorStore = create<AssessorState>((set, get) => ({
         )
       };
     }),
-  setSelection: (nodeIds, edgeIds) => set({ selectedNodeIds: nodeIds, selectedEdgeIds: edgeIds }),
+  setSelection: (nodeIds, edgeIds) =>
+    set((state) => {
+      const sameNodes =
+        state.selectedNodeIds.length === nodeIds.length &&
+        state.selectedNodeIds.every((id, index) => id === nodeIds[index]);
+      const sameEdges =
+        state.selectedEdgeIds.length === edgeIds.length &&
+        state.selectedEdgeIds.every((id, index) => id === edgeIds[index]);
+
+      if (sameNodes && sameEdges) {
+        return state;
+      }
+
+      return { selectedNodeIds: nodeIds, selectedEdgeIds: edgeIds };
+    }),
   deleteSelection: () =>
     set((state) => ({
       edges: state.edges.filter((edge) => !state.selectedEdgeIds.includes(edge.id)),

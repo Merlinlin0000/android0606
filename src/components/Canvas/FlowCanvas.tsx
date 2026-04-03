@@ -11,6 +11,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useMemo, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { SmartStepEdge } from '@tisoap/react-flow-smart-edge';
 import { AssetNode } from '../NodeTypes/AssetNode';
 import { ZoneNode } from '../NodeTypes/ZoneNode';
@@ -37,7 +38,18 @@ const FlowInner = () => {
     addAssetNode,
     markNodeInZone,
     setSelection
-  } = useAssessorStore();
+  } = useAssessorStore(
+    useShallow((state) => ({
+      nodes: state.nodes,
+      edges: state.edges,
+      onNodesChange: state.onNodesChange,
+      onEdgesChange: state.onEdgesChange,
+      onConnect: state.onConnect,
+      addAssetNode: state.addAssetNode,
+      markNodeInZone: state.markNodeInZone,
+      setSelection: state.setSelection
+    }))
+  );
 
   const zones = useMemo(() => nodes.filter((node) => node.type === 'zoneNode'), [nodes]);
 
