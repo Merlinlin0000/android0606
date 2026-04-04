@@ -55,7 +55,7 @@ const toFlowNode = (node: DiagramNode, focusedNodeId?: string): Node => {
 
 const TopologyCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const { screenToFlowPosition, setCenter, setViewport, fitView } = useReactFlow();
+  const { screenToFlowPosition, setCenter, setViewport, fitView, getViewport } = useReactFlow();
 
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
@@ -136,8 +136,16 @@ const TopologyCanvas = () => {
   };
 
   useEffect(() => {
-    setViewport(viewport, { duration: 0 });
-  }, [setViewport, viewport]);
+    const current = getViewport();
+    const changed =
+      Math.abs(current.x - viewport.x) > 0.5 ||
+      Math.abs(current.y - viewport.y) > 0.5 ||
+      Math.abs(current.zoom - viewport.zoom) > 0.001;
+
+    if (changed) {
+      setViewport(viewport, { duration: 0 });
+    }
+  }, [getViewport, setViewport, viewport]);
 
   useEffect(() => {
     if (!focusedNodeId) return;
