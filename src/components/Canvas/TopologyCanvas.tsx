@@ -27,8 +27,6 @@ const toFlowNode = (node: DiagramNode, focusedNodeId?: string): Node => {
       id: node.id,
       type: 'zone',
       position: node.position,
-      parentNode: node.parentId,
-      extent: node.parentId ? 'parent' : undefined,
       data: node.data,
       style: { width: node.size.width, height: node.size.height },
       resizable: true,
@@ -42,8 +40,6 @@ const toFlowNode = (node: DiagramNode, focusedNodeId?: string): Node => {
     id: node.id,
     type: 'asset',
     position: node.position,
-    parentNode: node.parentId,
-    extent: node.parentId ? 'parent' : undefined,
     data: {
       ...node.data,
       status: node.id === focusedNodeId ? 'selected' : 'default',
