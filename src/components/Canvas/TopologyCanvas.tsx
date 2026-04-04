@@ -138,7 +138,8 @@ const TopologyCanvas = () => {
     [createNodeFromAsset, recomputeOwnershipForAll, screenToFlowPosition],
   );
 
-  const onNodeClick: NodeMouseHandler = (_, node) => {
+  const onNodeClick: NodeMouseHandler = (event, node) => {
+    event.stopPropagation();
     setSelectedNodeId(node.id);
     setSelectedEdgeId(undefined);
     clearFocusedNode();
@@ -201,7 +202,8 @@ const TopologyCanvas = () => {
           onNodesChange={handleNodesChange}
           onNodeDragStop={() => recomputeOwnershipForAll()}
           onNodeClick={onNodeClick}
-          onEdgeClick={(_, edge) => {
+          onEdgeClick={(event, edge) => {
+            event.stopPropagation();
             setSelectedEdgeId(edge.id);
             setSelectedNodeId(undefined);
           }}
