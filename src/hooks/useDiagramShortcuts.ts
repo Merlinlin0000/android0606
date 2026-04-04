@@ -1,6 +1,14 @@
 import { useEffect } from 'react';
 import { useAppStore } from '../store/useAppStore';
 
+
+const isTypingTarget = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable;
+};
+
+
 export const useDiagramShortcuts = () => {
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);
   const setClipboardNode = useAppStore((state) => state.setClipboardNode);
@@ -15,14 +23,15 @@ export const useDiagramShortcuts = () => {
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const ctrl = event.ctrlKey || event.metaKey;
+      const typing = isTypingTarget(event.target);
 
-      if ((event.key === 'Delete' || event.key === 'Backspace') && !ctrl) {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && !ctrl && !typing) {
         event.preventDefault();
         removeSelectedElement();
         return;
       }
 
-      if (ctrl && event.key.toLowerCase() === 'c') {
+      if (ctrl && event.key.toLowerCase() === 'c' && !typing) {
         event.preventDefault();
         const node = nodes.find((n) => n.id === selectedNodeId);
         if (node?.type === 'asset') {
@@ -31,7 +40,7 @@ export const useDiagramShortcuts = () => {
         return;
       }
 
-      if (ctrl && event.key.toLowerCase() === 'v') {
+      if (ctrl && event.key.toLowerCase() === 'v' && !typing) {
         event.preventDefault();
         if (clipboardNode?.type === 'asset') {
           duplicateAssetNodeInstance(clipboardNode.id);
@@ -39,13 +48,13 @@ export const useDiagramShortcuts = () => {
         return;
       }
 
-      if (ctrl && event.key.toLowerCase() === 'z' && !event.shiftKey) {
+      if (ctrl && event.key.toLowerCase() === 'z' && !event.shiftKey && !typing) {
         event.preventDefault();
         undo();
         return;
       }
 
-      if ((ctrl && event.key.toLowerCase() === 'y') || (ctrl && event.shiftKey && event.key.toLowerCase() === 'z')) {
+      if (((ctrl && event.key.toLowerCase() === 'y') || (ctrl && event.shiftKey && event.key.toLowerCase() === 'z')) && !typing) {
         event.preventDefault();
         redo();
         return;

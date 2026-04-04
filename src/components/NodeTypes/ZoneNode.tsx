@@ -24,7 +24,8 @@ const ZoneNode = ({ id, data, selected }: NodeProps<ZoneNodeData>) => {
         minWidth={220}
         minHeight={140}
         lineClassName="!border-sky-300"
-        handleClassName="!h-2.5 !w-2.5 !border-sky-400 !bg-white"
+        handleClassName="!h-3.5 !w-3.5 !border-sky-500 !bg-white shadow"
+        autoScale
         onResizeEnd={(_, params) => updateZoneNodeSize(id, { width: params.width, height: params.height })}
       />
 
