@@ -13,6 +13,8 @@ const deploymentText = (count: number) => {
   return `已部署 ${count} 个实例`;
 };
 
+const buildBaseInstanceName = (label: string, ip: string) => `${label}_${ip}`;
+
 const AssetPool = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [keyword, setKeyword] = useState('');
@@ -48,6 +50,17 @@ const AssetPool = () => {
 
     return nodes.filter((node) => node.type === 'asset' && node.data.assetId === selectedAssetId);
   }, [nodes, selectedAssetId]);
+
+  const instanceDisplayNames = useMemo(() => {
+    const used = new Map<string, number>();
+
+    return selectedAssetInstances.map((node) => {
+      const base = node.data.instanceName?.trim() || buildBaseInstanceName(node.data.label, node.data.ip);
+      const currentCount = (used.get(base) ?? 0) + 1;
+      used.set(base, currentCount);
+      return currentCount === 1 ? base : `${base}_${currentCount}`;
+    });
+  }, [selectedAssetInstances]);
 
   const triggerUpload = () => {
     fileInputRef.current?.click();
@@ -176,7 +189,7 @@ const AssetPool = () => {
                     : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50',
                 )}
               >
-                <span>实例 #{index + 1}</span>
+                <span>{instanceDisplayNames[index]}</span>
                 <span className="inline-flex items-center gap-1">
                   <LocateFixed className="h-3 w-3" /> {node.id.slice(-4)}
                 </span>

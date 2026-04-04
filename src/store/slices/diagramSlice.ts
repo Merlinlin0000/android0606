@@ -60,6 +60,19 @@ const mapAssetFieldsToNodeData = (nodeData: AssetNodeData, asset: AppStore['asse
   zoneId: nodeData.zoneId,
 });
 
+const buildInstanceBaseName = (label: string, ip: string) => `${label}_${ip}`;
+
+const makeNextInstanceName = (baseName: string, usedNames: Set<string>) => {
+  if (!usedNames.has(baseName)) return baseName;
+
+  let index = 2;
+  while (usedNames.has(`${baseName}_${index}`)) {
+    index += 1;
+  }
+
+  return `${baseName}_${index}`;
+};
+
 export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = (set, get) => ({
   diagramId: 'diagram-demo',
   diagramName: 'Untitled Diagram',
@@ -104,14 +117,27 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
   },
 
   createNodeFromAsset: ({ assetId, position, instanceName }) => {
-    const asset = get().assets[assetId];
+    const state = get();
+    const asset = state.assets[assetId];
     if (!asset) return undefined;
+    const usedNames = new Set(
+      state.nodes
+        .filter((node) => node.type === 'asset' && node.data.assetId === assetId)
+        .map((node) => node.data.instanceName?.trim() || buildInstanceBaseName(node.data.label, node.data.ip)),
+    );
+    const resolvedInstanceName = instanceName?.trim() || makeNextInstanceName(buildInstanceBaseName(asset.name, asset.ip), usedNames);
+
     get().pushHistoryCheckpoint();
     const nodeId = nanoid(10);
     set((state) => ({
       nodes: recomputeOwnership([
         ...state.nodes,
-        { id: nodeId, type: 'asset', position, data: { assetId, label: asset.name, type: asset.type, ip: asset.ip, model: asset.model, notes: asset.notes, zoneId: undefined, instanceName, status: 'default' } as AssetNodeData },
+        {
+          id: nodeId,
+          type: 'asset',
+          position,
+          data: { assetId, label: asset.name, type: asset.type, ip: asset.ip, model: asset.model, notes: asset.notes, zoneId: undefined, instanceName: resolvedInstanceName, status: 'default' } as AssetNodeData,
+        },
       ]),
     }));
     return nodeId;
@@ -132,14 +158,22 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
   },
 
   duplicateAssetNodeInstance: (nodeId, offset = { x: 40, y: 40 }) => {
-    const source = get().nodes.find((n) => n.id === nodeId);
+    const state = get();
+    const source = state.nodes.find((n) => n.id === nodeId);
     if (!source || source.type !== 'asset') return undefined;
+    const usedNames = new Set(
+      state.nodes
+        .filter((node) => node.type === 'asset' && node.data.assetId === source.data.assetId)
+        .map((node) => node.data.instanceName?.trim() || buildInstanceBaseName(node.data.label, node.data.ip)),
+    );
+    const nextInstanceName = makeNextInstanceName(buildInstanceBaseName(source.data.label, source.data.ip), usedNames);
+
     get().pushHistoryCheckpoint();
     const newNodeId = nanoid(10);
     set((state) => ({
       nodes: recomputeOwnership([
         ...state.nodes,
-        { ...source, id: newNodeId, position: { x: source.position.x + offset.x, y: source.position.y + offset.y }, data: { ...source.data, status: 'default' } },
+        { ...source, id: newNodeId, position: { x: source.position.x + offset.x, y: source.position.y + offset.y }, data: { ...source.data, instanceName: nextInstanceName, status: 'default' } },
       ]),
       selectedNodeId: newNodeId,
     }));

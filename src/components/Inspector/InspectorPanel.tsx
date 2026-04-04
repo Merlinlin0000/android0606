@@ -87,7 +87,7 @@ const InspectorPanel = () => {
           <div>
             <label className="mb-1 block text-xs text-slate-500">当前实例信息</label>
             <input
-              value={selectedNode.data.instanceName ?? selectedNode.id}
+              value={selectedNode.data.instanceName ?? `${selectedNode.data.label}_${selectedNode.data.ip}`}
               onChange={(e) => updateNodeInstanceData(selectedNode.id, { instanceName: e.target.value })}
               className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
             />
