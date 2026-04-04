@@ -15,6 +15,7 @@ const InspectorPanel = () => {
   const updateAsset = useAppStore((state) => state.updateAsset);
   const updateNodeInstanceData = useAppStore((state) => state.updateNodeInstanceData);
   const updateZoneNodeColor = useAppStore((state) => state.updateZoneNodeColor);
+  const removeEdge = useAppStore((state) => state.removeEdge);
 
   const selectedNode = useMemo(() => nodes.find((node) => node.id === selectedNodeId), [nodes, selectedNodeId]);
   const selectedEdge = useMemo(() => edges.find((edge) => edge.id === selectedEdgeId), [edges, selectedEdgeId]);
@@ -110,6 +111,13 @@ const InspectorPanel = () => {
           <div>Edge ID: {selectedEdge.id}</div>
           <div>Source: {selectedEdge.source}</div>
           <div>Target: {selectedEdge.target}</div>
+          <button
+            type="button"
+            onClick={() => removeEdge(selectedEdge.id)}
+            className="mt-2 rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-xs text-rose-700 hover:bg-rose-100"
+          >
+            删除连线
+          </button>
         </div>
       )}
     </aside>

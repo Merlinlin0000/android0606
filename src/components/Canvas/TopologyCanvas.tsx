@@ -19,6 +19,7 @@ import { nodeTypes } from '../NodeTypes';
 import type { DiagramNode } from '../../types/diagram';
 import { ASSET_DND_MIME } from '../../constants/dnd';
 import { buildFutureSmartEdge } from '../../utils/edgeRouting';
+import SeparatedStepEdge from './SeparatedStepEdge';
 
 const toFlowNode = (node: DiagramNode, focusedNodeId?: string): Node => {
   if (node.type === 'zone') {
@@ -63,28 +64,40 @@ const TopologyCanvas = () => {
   const setNodes = useAppStore((state) => state.setNodes);
   const setViewportState = useAppStore((state) => state.setViewport);
   const addEdgeFromConnection = useAppStore((state) => state.addEdgeFromConnection);
+  const removeEdge = useAppStore((state) => state.removeEdge);
   const recomputeOwnershipForAll = useAppStore((state) => state.recomputeOwnershipForAll);
   const createNodeFromAsset = useAppStore((state) => state.createNodeFromAsset);
   const setSelectedNodeId = useAppStore((state) => state.setSelectedNodeId);
   const setSelectedEdgeId = useAppStore((state) => state.setSelectedEdgeId);
+  const selectedEdgeId = useAppStore((state) => state.selectedEdgeId);
   const focusedNodeId = useAppStore((state) => state.focusedNodeId);
   const clearFocusedNode = useAppStore((state) => state.clearFocusedNode);
   const pendingFitViewForExport = useAppStore((state) => state.pendingFitViewForExport);
   const clearFitViewForExport = useAppStore((state) => state.clearFitViewForExport);
 
   const flowNodes = useMemo(() => nodes.map((node) => toFlowNode(node, focusedNodeId)), [nodes, focusedNodeId]);
-  const flowEdges = useMemo(
-    () =>
-      edges.map(
-        (edge): Edge => ({
-          ...edge,
-          type: 'step',
-          style: { stroke: '#94a3b8', strokeWidth: 1.5 },
-          markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' },
-        }),
-      ),
-    [edges],
-  );
+  const flowEdges = useMemo(() => {
+    const targetLaneCounter = new Map<string, number>();
+
+    return edges.map((edge): Edge => {
+      const laneIndex = targetLaneCounter.get(edge.target) ?? 0;
+      targetLaneCounter.set(edge.target, laneIndex + 1);
+
+      const laneOffset = (laneIndex - (targetLaneCounter.get(edge.target)! - 1) / 2) * 20;
+
+      return {
+        ...edge,
+        type: 'separatedStep',
+        data: { laneOffset },
+        selected: selectedEdgeId === edge.id,
+        style:
+          selectedEdgeId === edge.id
+            ? { stroke: '#475569', strokeWidth: 2.2 }
+            : { stroke: '#94a3b8', strokeWidth: 1.5 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: selectedEdgeId === edge.id ? '#475569' : '#94a3b8' },
+      };
+    });
+  }, [edges, selectedEdgeId]);
 
   const handleNodesChange: OnNodesChange = (changes) => {
     const positionChanges = new Map<string, { x: number; y: number }>();
@@ -174,6 +187,7 @@ const TopologyCanvas = () => {
           nodes={flowNodes}
           edges={flowEdges}
           nodeTypes={nodeTypes}
+          edgeTypes={{ separatedStep: SeparatedStepEdge }}
           selectionOnDrag
           panOnDrag
           zoomOnScroll
@@ -182,7 +196,7 @@ const TopologyCanvas = () => {
           selectionMode={SelectionMode.Partial}
           fitView
           deleteKeyCode={null}
-          defaultEdgeOptions={{ type: 'step', style: { stroke: '#94a3b8', strokeWidth: 1.5 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' } }}
+          defaultEdgeOptions={{ type: 'separatedStep', style: { stroke: '#94a3b8', strokeWidth: 1.5 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' } }}
           onConnect={(connection: Connection) => {
             buildFutureSmartEdge(connection);
             addEdgeFromConnection(connection);
@@ -195,6 +209,7 @@ const TopologyCanvas = () => {
             setSelectedEdgeId(edge.id);
             setSelectedNodeId(undefined);
           }}
+          onEdgeDoubleClick={(_, edge) => removeEdge(edge.id)}
           onPaneClick={() => {
             setSelectedNodeId(undefined);
             setSelectedEdgeId(undefined);
