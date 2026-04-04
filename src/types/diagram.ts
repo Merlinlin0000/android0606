@@ -28,6 +28,7 @@ export interface AssetNodeData {
   type: Asset['type'];
   ip: string;
   model?: string;
+  notes?: string;
   zoneId?: string;
   instanceName?: string;
   status?: 'default' | 'selected' | 'error';

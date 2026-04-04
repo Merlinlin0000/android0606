@@ -11,16 +11,12 @@ const InspectorPanel = () => {
   const selectedEdgeId = useAppStore((state) => state.selectedEdgeId);
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
-  const assets = useAppStore((state) => state.assets);
-  const updateAsset = useAppStore((state) => state.updateAsset);
   const updateNodeInstanceData = useAppStore((state) => state.updateNodeInstanceData);
   const updateZoneNodeColor = useAppStore((state) => state.updateZoneNodeColor);
   const removeEdge = useAppStore((state) => state.removeEdge);
 
   const selectedNode = useMemo(() => nodes.find((node) => node.id === selectedNodeId), [nodes, selectedNodeId]);
   const selectedEdge = useMemo(() => edges.find((edge) => edge.id === selectedEdgeId), [edges, selectedEdgeId]);
-
-  const selectedAsset = selectedNode?.type === 'asset' ? assets[selectedNode.data.assetId] : undefined;
 
   return (
     <aside className={cn('flex h-full flex-col rounded-2xl p-4', micaPanelClass)}>
@@ -34,29 +30,33 @@ const InspectorPanel = () => {
         </div>
       )}
 
-      {selectedNode?.type === 'asset' && selectedAsset && (
+      {selectedNode?.type === 'asset' && (
         <div className="mt-4 space-y-3 text-sm">
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-700">
+            当前为“实例级编辑”：只影响当前节点实例，不会同步到同资产的其他实例。
+          </div>
+
           <div>
             <label className="mb-1 block text-xs text-slate-500">名称</label>
             <input
-              value={selectedAsset.name}
-              onChange={(e) => updateAsset(selectedAsset.id, { name: e.target.value })}
+              value={selectedNode.data.label}
+              onChange={(e) => updateNodeInstanceData(selectedNode.id, { label: e.target.value })}
               className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
             />
           </div>
           <div>
             <label className="mb-1 block text-xs text-slate-500">IP</label>
             <input
-              value={selectedAsset.ip}
-              onChange={(e) => updateAsset(selectedAsset.id, { ip: e.target.value })}
+              value={selectedNode.data.ip}
+              onChange={(e) => updateNodeInstanceData(selectedNode.id, { ip: e.target.value })}
               className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
             />
           </div>
           <div>
             <label className="mb-1 block text-xs text-slate-500">类型（受限）</label>
             <select
-              value={selectedAsset.type}
-              onChange={(e) => updateAsset(selectedAsset.id, { type: e.target.value as AssetType })}
+              value={selectedNode.data.type}
+              onChange={(e) => updateNodeInstanceData(selectedNode.id, { type: e.target.value as AssetType })}
               className="w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5"
             >
               {assetTypeOptions.map((option) => (
@@ -67,16 +67,16 @@ const InspectorPanel = () => {
           <div>
             <label className="mb-1 block text-xs text-slate-500">型号</label>
             <input
-              value={selectedAsset.model ?? ''}
-              onChange={(e) => updateAsset(selectedAsset.id, { model: e.target.value })}
+              value={selectedNode.data.model ?? ''}
+              onChange={(e) => updateNodeInstanceData(selectedNode.id, { model: e.target.value })}
               className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
             />
           </div>
           <div>
             <label className="mb-1 block text-xs text-slate-500">备注</label>
             <textarea
-              value={selectedAsset.notes ?? ''}
-              onChange={(e) => updateAsset(selectedAsset.id, { notes: e.target.value })}
+              value={selectedNode.data.notes ?? ''}
+              onChange={(e) => updateNodeInstanceData(selectedNode.id, { notes: e.target.value })}
               className="h-16 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
             />
           </div>
