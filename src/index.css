@@ -17,3 +17,14 @@ body {
   margin: 0;
   @apply bg-slate-50 text-slate-700 antialiased;
 }
+
+
+.react-flow__controls-button svg {
+  fill: #334155 !important;
+  color: #334155 !important;
+  stroke: #334155 !important;
+}
+
+.react-flow__minimap svg {
+  color: #334155;
+}
