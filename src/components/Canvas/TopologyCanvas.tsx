@@ -32,7 +32,7 @@ const toFlowNode = (node: DiagramNode, focusedNodeId?: string): Node => {
       resizable: true,
       draggable: true,
       selectable: true,
-      zIndex: 1,
+      zIndex: -10,
     };
   }
 
@@ -85,6 +85,7 @@ const TopologyCanvas = () => {
         ...edge,
         type: 'separatedStep',
         data: { laneOffset },
+        zIndex: 5,
         selected: selectedEdgeId === edge.id,
         style:
           selectedEdgeId === edge.id
