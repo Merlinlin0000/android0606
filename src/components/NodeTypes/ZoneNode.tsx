@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import type { NodeProps } from 'reactflow';
-import { Handle, NodeResizer, Position } from 'reactflow';
+import { Handle, NodeResizeControl, NodeResizer, Position } from 'reactflow';
 import { useAppStore } from '../../store/useAppStore';
 import type { ZoneNodeData } from '../../types/diagram';
 
@@ -28,6 +28,16 @@ const ZoneNode = ({ id, data, selected }: NodeProps<ZoneNodeData>) => {
         autoScale
         onResizeEnd={(_, params) => updateZoneNodeSize(id, { width: params.width, height: params.height })}
       />
+
+      <NodeResizeControl
+        minWidth={220}
+        minHeight={140}
+        position="bottom-right"
+        className="!h-5 !w-5 !rounded !border !border-sky-500 !bg-white/95 !shadow"
+        onResizeEnd={(_, params) => updateZoneNodeSize(id, { width: params.width, height: params.height })}
+      >
+        <span className="text-[10px] text-sky-700">↘</span>
+      </NodeResizeControl>
 
       <Handle type="target" position={Position.Top} className="!h-2 !w-2 !bg-slate-400" />
       <div className="flex items-center justify-between border-b border-slate-200/80 bg-white/70 px-3 py-1.5">
