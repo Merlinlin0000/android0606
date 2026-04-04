@@ -3,7 +3,7 @@ import { Download, LocateFixed, Search, Upload } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { micaPanelClass } from '../../hooks/useMicaPanelClass';
 import { cn } from '../../utils/cn';
-import { assetTypeIconMap } from '../NodeTypes/iconMap';
+import { assetTypeColorMap, assetTypeIconMap } from '../NodeTypes/iconMap';
 import { downloadAssetExcelTemplate, type ImportMode } from '../../utils/assetExcel';
 import { ASSET_DND_MIME } from '../../constants/dnd';
 
@@ -142,7 +142,7 @@ const AssetPool = () => {
               className="flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-left transition hover:border-sky-200 hover:bg-sky-50"
               title="拖拽到画布可创建新实例"
             >
-              <Icon className="mt-0.5 h-4 w-4 text-sky-600" />
+              <span className={`mt-0.5 rounded-lg border p-1 ${assetTypeColorMap[asset.type]}`}><Icon className="h-4 w-4" /></span>
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium text-slate-700">{asset.name}</div>
                 <div className="text-xs text-slate-500">{asset.ip}</div>
