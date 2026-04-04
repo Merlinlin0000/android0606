@@ -208,7 +208,9 @@ const TopologyCanvas = () => {
             setSelectedNodeId(undefined);
           }}
           onEdgeDoubleClick={(_, edge) => removeEdge(edge.id)}
-          onPaneClick={() => {
+          onPaneClick={(event) => {
+            const target = event.target as HTMLElement | null;
+            if (target?.closest('.react-flow__node') || target?.closest('.react-flow__edge')) return;
             setSelectedNodeId(undefined);
             setSelectedEdgeId(undefined);
             clearFocusedNode();

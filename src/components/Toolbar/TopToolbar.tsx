@@ -1,5 +1,5 @@
 import { useRef, type ChangeEvent } from 'react';
-import { Download, FolderSync, LayoutTemplate, Save, Upload } from 'lucide-react';
+import { Download, FolderPlus, FolderSync, LayoutTemplate, Save, Upload } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { exportCanvasToJpg, exportFailHint, formatPrecheckSummary, runExportPrecheck, type ExportQuality } from '../../utils/exportJpg';
 
@@ -12,8 +12,40 @@ const TopToolbar = () => {
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
   const requestFitViewForExport = useAppStore((state) => state.requestFitViewForExport);
+  const upsertZone = useAppStore((state) => state.upsertZone);
+  const createZoneNode = useAppStore((state) => state.createZoneNode);
 
   const onImportClick = () => fileInputRef.current?.click();
+  const createId = () => {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+      return crypto.randomUUID();
+    }
+
+    return `zone-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  };
+
+  const onCreateZone = () => {
+    const zoneName = window.prompt('请输入区域名称', 'New Zone');
+    if (!zoneName) return;
+
+    const zoneColor = window.prompt('请输入区域颜色（HEX）', '#38bdf8') || '#38bdf8';
+    const zoneId = createId();
+
+    upsertZone({
+      id: zoneId,
+      name: zoneName.trim() || 'New Zone',
+      color: zoneColor,
+      description: '用户新增区域',
+    });
+    createZoneNode({
+      zoneId,
+      position: {
+        x: 180 + nodes.filter((node) => node.type === 'zone').length * 32,
+        y: 120 + nodes.filter((node) => node.type === 'zone').length * 28,
+      },
+      level: 0,
+    });
+  };
 
   const onFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -65,6 +97,10 @@ const TopToolbar = () => {
         <button onClick={onExportJpg} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
           <Download className="h-4 w-4" />
           Export JPG
+        </button>
+        <button onClick={onCreateZone} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
+          <FolderPlus className="h-4 w-4" />
+          新增区域
         </button>
         <button
           onClick={saveZoneTemplateToLocal}
