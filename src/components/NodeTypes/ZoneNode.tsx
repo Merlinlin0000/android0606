@@ -20,7 +20,7 @@ const ZoneNode = ({ id, data, selected }: NodeProps<ZoneNodeData>) => {
       style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.35)' }}
     >
       <NodeResizer
-        isVisible={selected}
+        isVisible
         minWidth={220}
         minHeight={140}
         lineClassName="!border-sky-300"
@@ -37,6 +37,7 @@ const ZoneNode = ({ id, data, selected }: NodeProps<ZoneNodeData>) => {
         {selected && <input type="color" value={data.color} onChange={onColorChange} className="h-5 w-6 rounded border border-slate-200 p-0" />}
       </div>
       <div className="px-3 py-2 text-[11px] text-slate-500">{data.description ?? 'Zone Container'}</div>
+      <div className="px-3 pb-2 text-[10px] text-slate-400">拖拽右下角手柄可缩放区域</div>
       <Handle type="source" position={Position.Bottom} className="!h-2 !w-2 !bg-slate-400" />
     </div>
   );
