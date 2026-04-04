@@ -8,6 +8,7 @@ const TopToolbar = () => {
   const saveZoneTemplateToLocal = useAppStore((state) => state.saveZoneTemplateToLocal);
   const clearAndReloadZoneTemplate = useAppStore((state) => state.clearAndReloadZoneTemplate);
   const exportDocumentJson = useAppStore((state) => state.exportDocumentJson);
+  const diagramName = useAppStore((state) => state.diagramName);
   const importDocumentJson = useAppStore((state) => state.importDocumentJson);
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
@@ -81,11 +82,18 @@ const TopToolbar = () => {
     }
   };
 
+  const onSaveJson = () => {
+    const suggestedName = `${(diagramName || 'diagram').trim() || 'diagram'}.json`;
+    const userInput = window.prompt('请输入导出文件名', suggestedName);
+    if (userInput === null) return;
+    exportDocumentJson(userInput);
+  };
+
   return (
     <div className="mb-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 shadow-mica backdrop-blur-md">
       <h1 className="text-base font-semibold text-slate-700">Assessor-Blade</h1>
       <div className="flex items-center gap-2">
-        <button onClick={exportDocumentJson} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
+        <button onClick={onSaveJson} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
           <Save className="h-4 w-4" />
           Save JSON
         </button>

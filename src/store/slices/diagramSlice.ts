@@ -46,7 +46,7 @@ export interface DiagramSlice {
   pushHistoryCheckpoint: () => void;
   undo: () => void;
   redo: () => void;
-  exportDocumentJson: () => void;
+  exportDocumentJson: (fileName?: string) => void;
   importDocumentJson: (payload: string) => void;
 }
 
@@ -224,7 +224,7 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
     set({ nodes: structuredClone(next.nodes), edges: structuredClone(next.edges), assets: structuredClone(next.assets), historyPast: [...historyPast, { nodes, edges, assets }], historyFuture: historyFuture.slice(0, -1) });
   },
 
-  exportDocumentJson: () => {
+  exportDocumentJson: (fileName) => {
     if (typeof window === 'undefined') return;
     const state = get();
     const payload = {
@@ -242,7 +242,13 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${state.diagramName || 'diagram'}.json`;
+    const trimmed = fileName?.trim();
+    const normalizedName = trimmed
+      ? trimmed.toLowerCase().endsWith('.json')
+        ? trimmed
+        : `${trimmed}.json`
+      : `${state.diagramName || 'diagram'}.json`;
+    a.download = normalizedName;
     a.click();
     URL.revokeObjectURL(url);
   },
