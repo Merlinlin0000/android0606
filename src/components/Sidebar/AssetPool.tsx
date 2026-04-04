@@ -20,7 +20,8 @@ const AssetPool = () => {
   const [importMessage, setImportMessage] = useState<string>('');
   const [isImporting, setIsImporting] = useState(false);
 
-  const assets = useAppStore((state) => Object.values(state.assets));
+  const assetsMap = useAppStore((state) => state.assets);
+  const assets = useMemo(() => Object.values(assetsMap), [assetsMap]);
   const nodes = useAppStore((state) => state.nodes);
   const selectedAssetId = useAppStore((state) => state.selectedAssetId);
   const focusedNodeId = useAppStore((state) => state.focusedNodeId);
