@@ -9,7 +9,6 @@ const assetTypeOptions: AssetType[] = ['Firewall', 'Switch', 'Server', 'Database
 const InspectorPanel = () => {
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);
   const selectedEdgeId = useAppStore((state) => state.selectedEdgeId);
-  const selectedCanvas = useAppStore((state) => state.selectedCanvas);
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
   const diagramId = useAppStore((state) => state.diagramId);
@@ -35,7 +34,7 @@ const InspectorPanel = () => {
       <h2 className="text-sm font-semibold text-slate-700">Inspector</h2>
       <p className="mt-1 text-xs text-slate-500">选中对象属性</p>
 
-      {selectedCanvas && !selectedNode && !selectedEdge && (
+      {!selectedNode && !selectedEdge && (
         <div className="mt-4 space-y-3 text-sm">
           <div>
             <label className="mb-1 block text-xs text-slate-500">画布名称</label>
@@ -63,13 +62,6 @@ const InspectorPanel = () => {
               <input type="number" step="0.1" value={Number(viewport.zoom.toFixed(2))} onChange={(e) => setViewport({ ...viewport, zoom: Number(e.target.value) || 1 })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
             </div>
           </div>
-        </div>
-      )}
-
-      {!selectedCanvas && !selectedNode && !selectedEdge && (
-        <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white/80 p-4 text-sm text-slate-500">
-          未选中对象。
-          <div className="mt-2 text-xs text-slate-400">点击资产节点 / Zone / 连线后，这里会显示可编辑属性（名称、IP、备注、颜色、连线删除等）。</div>
         </div>
       )}
 
