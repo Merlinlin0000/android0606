@@ -11,6 +11,7 @@ import ReactFlow, {
   type Node,
   type NodeChange,
   type NodeMouseHandler,
+  type OnSelectionChangeParams,
   type OnNodesChange,
   type Viewport,
 } from 'reactflow';
@@ -148,6 +149,27 @@ const TopologyCanvas = () => {
     clearFocusedNode();
   };
 
+  const onSelectionChange = useCallback(
+    ({ nodes: selectedNodes, edges: selectedEdges }: OnSelectionChangeParams) => {
+      if (selectedEdges.length > 0) {
+        setSelectedCanvas(false);
+        setSelectedEdgeId(selectedEdges[0].id);
+        return;
+      }
+
+      if (selectedNodes.length > 0) {
+        setSelectedCanvas(false);
+        setSelectedNodeId(selectedNodes[0].id);
+        return;
+      }
+
+      setSelectedCanvas(true);
+      setSelectedNodeId(undefined);
+      setSelectedEdgeId(undefined);
+    },
+    [setSelectedCanvas, setSelectedEdgeId, setSelectedNodeId],
+  );
+
   useEffect(() => {
     const current = getViewport();
     const changed =
@@ -203,6 +225,7 @@ const TopologyCanvas = () => {
           }}
           onMoveEnd={(_, nextViewport: Viewport) => setViewportState(nextViewport)}
           onNodesChange={handleNodesChange}
+          onSelectionChange={onSelectionChange}
           onNodeDragStop={() => recomputeOwnershipForAll()}
           onNodeClick={onNodeClick}
           onEdgeClick={(event, edge) => {
