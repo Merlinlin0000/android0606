@@ -235,14 +235,6 @@ const TopologyCanvas = () => {
             setSelectedNodeId(undefined);
           }}
           onEdgeDoubleClick={(_, edge) => removeEdge(edge.id)}
-          onPaneClick={(event) => {
-            const target = event.target as HTMLElement | null;
-            if (target?.closest('.react-flow__node') || target?.closest('.react-flow__edge')) return;
-            setSelectedCanvas(true);
-            setSelectedNodeId(undefined);
-            setSelectedEdgeId(undefined);
-            clearFocusedNode();
-          }}
           className="rounded-2xl"
         >
           <Background color="#cbd5e1" size={1.2} gap={24} />
