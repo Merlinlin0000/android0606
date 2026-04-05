@@ -151,7 +151,7 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
     set((state) => ({
       nodes: recomputeOwnership([
         ...state.nodes,
-        { id: nodeId, type: 'zone', position, size: { width: 320, height: 220 }, parentId, data: { zoneId: nodeId, label: zone.name, color: zone.color, description: zone.description, level } },
+        { id: nodeId, type: 'zone', position, size: { width: 320, height: 220 }, parentId, data: { zoneId, label: zone.name, color: zone.color, description: zone.description, level } },
       ]),
     }));
     return nodeId;

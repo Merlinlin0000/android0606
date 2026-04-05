@@ -12,11 +12,16 @@ const InspectorPanel = () => {
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
   const updateNodeInstanceData = useAppStore((state) => state.updateNodeInstanceData);
-  const updateZoneNodeColor = useAppStore((state) => state.updateZoneNodeColor);
+  const zones = useAppStore((state) => state.zones);
+  const updateZone = useAppStore((state) => state.updateZone);
   const removeEdge = useAppStore((state) => state.removeEdge);
 
   const selectedNode = useMemo(() => nodes.find((node) => node.id === selectedNodeId), [nodes, selectedNodeId]);
   const selectedEdge = useMemo(() => edges.find((edge) => edge.id === selectedEdgeId), [edges, selectedEdgeId]);
+  const selectedZone = useMemo(() => {
+    if (!selectedNode || selectedNode.type !== 'zone') return undefined;
+    return zones[selectedNode.data.zoneId];
+  }, [selectedNode, zones]);
 
   return (
     <aside className={cn('flex h-full flex-col rounded-2xl p-4', micaPanelClass)}>
@@ -99,11 +104,28 @@ const InspectorPanel = () => {
         <div className="mt-4 space-y-3 text-sm">
           <div>
             <label className="mb-1 block text-xs text-slate-500">Zone 名称</label>
-            <input value={selectedNode.data.label} readOnly className="w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5" />
+            <input
+              value={selectedZone?.name ?? selectedNode.data.label}
+              onChange={(e) => updateZone(selectedNode.data.zoneId, { name: e.target.value })}
+              className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
+            />
           </div>
           <div>
             <label className="mb-1 block text-xs text-slate-500">颜色</label>
-            <input type="color" value={selectedNode.data.color} onChange={(e) => updateZoneNodeColor(selectedNode.id, e.target.value)} className="h-8 w-full rounded-md border border-slate-200 bg-white p-1" />
+            <input
+              type="color"
+              value={selectedZone?.color ?? selectedNode.data.color}
+              onChange={(e) => updateZone(selectedNode.data.zoneId, { color: e.target.value })}
+              className="h-8 w-full rounded-md border border-slate-200 bg-white p-1"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-slate-500">描述</label>
+            <textarea
+              value={selectedZone?.description ?? selectedNode.data.description ?? ''}
+              onChange={(e) => updateZone(selectedNode.data.zoneId, { description: e.target.value })}
+              className="h-16 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5"
+            />
           </div>
           <div className="text-xs text-slate-500">层级路径：{selectedNode.hierarchyPath?.join(' / ') || '(root)'}</div>
         </div>
