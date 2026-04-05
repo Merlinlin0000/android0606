@@ -303,6 +303,7 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
         viewport: parsed.viewport ?? { x: 0, y: 0, zoom: 1 },
         selectedNodeId: undefined,
         selectedEdgeId: undefined,
+        selectedCanvas: true,
       });
     } catch (error) {
       console.error('Invalid diagram JSON', error);

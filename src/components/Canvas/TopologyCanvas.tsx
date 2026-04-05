@@ -65,6 +65,7 @@ const TopologyCanvas = () => {
   const createNodeFromAsset = useAppStore((state) => state.createNodeFromAsset);
   const setSelectedNodeId = useAppStore((state) => state.setSelectedNodeId);
   const setSelectedEdgeId = useAppStore((state) => state.setSelectedEdgeId);
+  const setSelectedCanvas = useAppStore((state) => state.setSelectedCanvas);
   const selectedEdgeId = useAppStore((state) => state.selectedEdgeId);
   const focusedNodeId = useAppStore((state) => state.focusedNodeId);
   const clearFocusedNode = useAppStore((state) => state.clearFocusedNode);
@@ -141,6 +142,7 @@ const TopologyCanvas = () => {
 
   const onNodeClick: NodeMouseHandler = (event, node) => {
     event.stopPropagation();
+    setSelectedCanvas(false);
     setSelectedNodeId(node.id);
     setSelectedEdgeId(undefined);
     clearFocusedNode();
@@ -205,6 +207,7 @@ const TopologyCanvas = () => {
           onNodeClick={onNodeClick}
           onEdgeClick={(event, edge) => {
             event.stopPropagation();
+            setSelectedCanvas(false);
             setSelectedEdgeId(edge.id);
             setSelectedNodeId(undefined);
           }}
@@ -212,6 +215,7 @@ const TopologyCanvas = () => {
           onPaneClick={(event) => {
             const target = event.target as HTMLElement | null;
             if (target?.closest('.react-flow__node') || target?.closest('.react-flow__edge')) return;
+            setSelectedCanvas(true);
             setSelectedNodeId(undefined);
             setSelectedEdgeId(undefined);
             clearFocusedNode();

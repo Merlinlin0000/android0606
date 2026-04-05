@@ -9,8 +9,15 @@ const assetTypeOptions: AssetType[] = ['Firewall', 'Switch', 'Server', 'Database
 const InspectorPanel = () => {
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);
   const selectedEdgeId = useAppStore((state) => state.selectedEdgeId);
+  const selectedCanvas = useAppStore((state) => state.selectedCanvas);
   const nodes = useAppStore((state) => state.nodes);
   const edges = useAppStore((state) => state.edges);
+  const diagramId = useAppStore((state) => state.diagramId);
+  const diagramName = useAppStore((state) => state.diagramName);
+  const diagramVersion = useAppStore((state) => state.diagramVersion);
+  const viewport = useAppStore((state) => state.viewport);
+  const setDiagramMeta = useAppStore((state) => state.setDiagramMeta);
+  const setViewport = useAppStore((state) => state.setViewport);
   const updateNodeInstanceData = useAppStore((state) => state.updateNodeInstanceData);
   const zones = useAppStore((state) => state.zones);
   const updateZone = useAppStore((state) => state.updateZone);
@@ -28,7 +35,38 @@ const InspectorPanel = () => {
       <h2 className="text-sm font-semibold text-slate-700">Inspector</h2>
       <p className="mt-1 text-xs text-slate-500">选中对象属性</p>
 
-      {!selectedNode && !selectedEdge && (
+      {selectedCanvas && !selectedNode && !selectedEdge && (
+        <div className="mt-4 space-y-3 text-sm">
+          <div>
+            <label className="mb-1 block text-xs text-slate-500">画布名称</label>
+            <input value={diagramName} onChange={(e) => setDiagramMeta({ name: e.target.value })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-slate-500">画布 ID</label>
+            <input value={diagramId} onChange={(e) => setDiagramMeta({ id: e.target.value })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-slate-500">版本</label>
+            <input value={diagramVersion} onChange={(e) => setDiagramMeta({ version: e.target.value })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="mb-1 block text-xs text-slate-500">视口 X</label>
+              <input type="number" value={Math.round(viewport.x)} onChange={(e) => setViewport({ ...viewport, x: Number(e.target.value) || 0 })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-slate-500">视口 Y</label>
+              <input type="number" value={Math.round(viewport.y)} onChange={(e) => setViewport({ ...viewport, y: Number(e.target.value) || 0 })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-slate-500">缩放</label>
+              <input type="number" step="0.1" value={Number(viewport.zoom.toFixed(2))} onChange={(e) => setViewport({ ...viewport, zoom: Number(e.target.value) || 1 })} className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!selectedCanvas && !selectedNode && !selectedEdge && (
         <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white/80 p-4 text-sm text-slate-500">
           未选中对象。
           <div className="mt-2 text-xs text-slate-400">点击资产节点 / Zone / 连线后，这里会显示可编辑属性（名称、IP、备注、颜色、连线删除等）。</div>
