@@ -144,7 +144,6 @@ const TopologyCanvas = () => {
     event.stopPropagation();
     setSelectedCanvas(false);
     setSelectedNodeId(node.id);
-    setSelectedEdgeId(undefined);
     clearFocusedNode();
   };
 
@@ -209,7 +208,6 @@ const TopologyCanvas = () => {
             event.stopPropagation();
             setSelectedCanvas(false);
             setSelectedEdgeId(edge.id);
-            setSelectedNodeId(undefined);
           }}
           onEdgeDoubleClick={(_, edge) => removeEdge(edge.id)}
           onPaneClick={() => {
