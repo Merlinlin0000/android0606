@@ -72,9 +72,15 @@ export const createZoneSlice: StateCreator<AppStore, [], [], ZoneSlice> = (set, 
   updateZone: (zoneId, patch) => {
     set((state) => {
       const current = state.zones[zoneId];
-      if (!current) return state;
-
-      const nextZone = { ...current, ...patch };
+      const fallbackNode = state.nodes.find((node) => node.type === 'zone' && (node.data.zoneId === zoneId || node.id === zoneId));
+      const nextZone: ZoneEntity = current
+        ? { ...current, ...patch }
+        : {
+            id: zoneId,
+            name: patch.name ?? fallbackNode?.data.label ?? 'Unnamed Zone',
+            color: patch.color ?? fallbackNode?.data.color ?? '#38bdf8',
+            description: patch.description ?? fallbackNode?.data.description,
+          };
 
       return {
         zones: {
@@ -82,7 +88,9 @@ export const createZoneSlice: StateCreator<AppStore, [], [], ZoneSlice> = (set, 
           [zoneId]: nextZone,
         },
         nodes: state.nodes.map((node) => {
-          if (node.type !== 'zone' || node.data.zoneId !== zoneId) return node;
+          if (node.type !== 'zone') return node;
+          const isTargetZone = node.data.zoneId === zoneId || (!current && node.id === zoneId);
+          if (!isTargetZone) return node;
 
           return {
             ...node,
