@@ -175,14 +175,23 @@ export const parseAssetExcelFile = async (file: File): Promise<AssetExcelParseRe
 };
 
 export const downloadAssetExcelTemplate = () => {
+  const supportedTypes: AssetType[] = ['Firewall', 'Switch', 'Server', 'Database', 'Terminal', 'Custom'];
   const rows = [
     ['资产名称', 'IP地址', '设备类型', '设备型号', '所属安全域', '备注'],
     ['核心防火墙', '10.0.0.1', 'Firewall', 'PA-VM', '生产区', '模板示例'],
     ['业务数据库', '10.0.1.20', 'Database', 'PostgreSQL', '数据区', '模板示例'],
   ];
+  const guideRows = [
+    ['使用说明', '内容'],
+    ['支持的设备类型（英文）', supportedTypes.join(', ')],
+    ['支持的设备类型（中文别名）', '防火墙、交换机、服务器、数据库、终端、自定义'],
+    ['设备类型填写建议', '优先使用英文标准值（如 Firewall / Server / Database）'],
+  ];
 
   const sheet = XLSX.utils.aoa_to_sheet(rows);
+  const guideSheet = XLSX.utils.aoa_to_sheet(guideRows);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, sheet, 'Assets');
+  XLSX.utils.book_append_sheet(workbook, guideSheet, '说明');
   XLSX.writeFile(workbook, 'assessor-blade-assets-template.xlsx');
 };
