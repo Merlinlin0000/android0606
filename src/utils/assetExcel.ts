@@ -26,18 +26,35 @@ export interface AssetExcelParseResult {
 }
 
 const canonicalTypeMap: Record<string, AssetType> = {
-  firewall: 'Firewall',
-  防火墙: 'Firewall',
-  switch: 'Switch',
-  交换机: 'Switch',
-  server: 'Server',
-  服务器: 'Server',
-  database: 'Database',
-  数据库: 'Database',
-  terminal: 'Terminal',
-  终端: 'Terminal',
-  custom: 'Custom',
-  自定义: 'Custom',
+  firewall: '防火墙',
+  防火墙: '防火墙',
+  日志审计: '日志审计',
+  logaudit: '日志审计',
+  数据库审计: '数据库审计',
+  dbaudit: '数据库审计',
+  堡垒机: '堡垒机',
+  bastion: '堡垒机',
+  vpn: 'VPN',
+  ips: 'IPS',
+  ids: 'IDS',
+  edr: 'EDR',
+  上网行为管理: '上网行为管理',
+  态势感知: '态势感知',
+  探针: '探针',
+  switch: '交换机',
+  交换机: '交换机',
+  router: '路由器',
+  路由器: '路由器',
+  gateway: '网关',
+  网关: '网关',
+  服务器: '单台服务器',
+  server: '单台服务器',
+  单台服务器: '单台服务器',
+  服务器集群: '服务器集群',
+  database: '数据库',
+  数据库: '数据库',
+  其他设备: '其他设备',
+  custom: '其他设备',
 };
 
 const normalize = (value: unknown) => String(value ?? '').trim();
@@ -175,17 +192,36 @@ export const parseAssetExcelFile = async (file: File): Promise<AssetExcelParseRe
 };
 
 export const downloadAssetExcelTemplate = () => {
-  const supportedTypes: AssetType[] = ['Firewall', 'Switch', 'Server', 'Database', 'Terminal', 'Custom'];
+  const supportedTypes: AssetType[] = [
+    '防火墙',
+    '日志审计',
+    '数据库审计',
+    '堡垒机',
+    'VPN',
+    'IPS',
+    'IDS',
+    'EDR',
+    '上网行为管理',
+    '态势感知',
+    '探针',
+    '交换机',
+    '路由器',
+    '网关',
+    '单台服务器',
+    '服务器集群',
+    '数据库',
+    '其他设备',
+  ];
   const rows = [
     ['资产名称', 'IP地址', '设备类型', '设备型号', '所属安全域', '备注'],
-    ['核心防火墙', '10.0.0.1', 'Firewall', 'PA-VM', '生产区', '模板示例'],
-    ['业务数据库', '10.0.1.20', 'Database', 'PostgreSQL', '数据区', '模板示例'],
+    ['核心防火墙', '10.0.0.1', '防火墙', 'PA-VM', '生产区', '模板示例'],
+    ['业务数据库', '10.0.1.20', '数据库', 'PostgreSQL', '数据区', '模板示例'],
   ];
   const guideRows = [
     ['使用说明', '内容'],
-    ['支持的设备类型（英文）', supportedTypes.join(', ')],
-    ['支持的设备类型（中文别名）', '防火墙、交换机、服务器、数据库、终端、自定义'],
-    ['设备类型填写建议', '优先使用英文标准值（如 Firewall / Server / Database）'],
+    ['支持的设备类型（选项）', supportedTypes.join('、')],
+    ['兼容英文输入', 'Firewall / Switch / Server / Database / Custom 等会自动映射为中文类型'],
+    ['设备类型填写建议', '优先使用中文标准选项，便于界面统一展示'],
   ];
 
   const sheet = XLSX.utils.aoa_to_sheet(rows);

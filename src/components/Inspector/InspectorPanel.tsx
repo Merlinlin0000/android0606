@@ -4,7 +4,26 @@ import { micaPanelClass } from '../../hooks/useMicaPanelClass';
 import { cn } from '../../utils/cn';
 import type { AssetType } from '../../types/diagram';
 
-const assetTypeOptions: AssetType[] = ['Firewall', 'Switch', 'Server', 'Database', 'Terminal', 'Custom'];
+const assetTypeOptions: AssetType[] = [
+  '防火墙',
+  '日志审计',
+  '数据库审计',
+  '堡垒机',
+  'VPN',
+  'IPS',
+  'IDS',
+  'EDR',
+  '上网行为管理',
+  '态势感知',
+  '探针',
+  '交换机',
+  '路由器',
+  '网关',
+  '单台服务器',
+  '服务器集群',
+  '数据库',
+  '其他设备',
+];
 
 const InspectorPanel = () => {
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);

@@ -91,7 +91,7 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
       id: 'node-asset-1',
       type: 'asset',
       position: { x: 220, y: 170 },
-      data: { assetId: 'asset-fw-1', label: 'HQ Firewall', type: 'Firewall', ip: '10.10.0.1', model: 'PA-VM', zoneId: 'node-zone-1', status: 'default' },
+      data: { assetId: 'asset-fw-1', label: 'HQ Firewall', type: '防火墙', ip: '10.10.0.1', model: 'PA-VM', zoneId: 'node-zone-1', status: 'default' },
       parentId: 'node-zone-1',
       hierarchyPath: ['node-zone-1'],
     },
