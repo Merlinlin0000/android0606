@@ -20,6 +20,7 @@ const InspectorPanel = () => {
   const updateNodeInstanceData = useAppStore((state) => state.updateNodeInstanceData);
   const zones = useAppStore((state) => state.zones);
   const updateZone = useAppStore((state) => state.updateZone);
+  const updateEdgeColor = useAppStore((state) => state.updateEdgeColor);
   const removeEdge = useAppStore((state) => state.removeEdge);
 
   const selectedNode = useMemo(() => nodes.find((node) => node.id === selectedNodeId), [nodes, selectedNodeId]);
@@ -166,6 +167,15 @@ const InspectorPanel = () => {
           <div>Edge ID: {selectedEdge.id}</div>
           <div>Source: {selectedEdge.source}</div>
           <div>Target: {selectedEdge.target}</div>
+          <div>
+            <label className="mb-1 block text-xs text-slate-500">连线颜色</label>
+            <input
+              type="color"
+              value={selectedEdge.color ?? '#94a3b8'}
+              onChange={(e) => updateEdgeColor(selectedEdge.id, e.target.value)}
+              className="h-8 w-full rounded-md border border-slate-200 bg-white p-1"
+            />
+          </div>
           <button
             type="button"
             onClick={() => removeEdge(selectedEdge.id)}

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, type DragEvent } from 'react';
 import ReactFlow, {
   Background,
   Controls,
-  MarkerType,
   MiniMap,
   SelectionMode,
   useReactFlow,
@@ -90,9 +89,8 @@ const TopologyCanvas = () => {
         selected: selectedEdgeId === edge.id,
         style:
           selectedEdgeId === edge.id
-            ? { stroke: '#475569', strokeWidth: 2.2 }
-            : { stroke: '#94a3b8', strokeWidth: 1.5 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: selectedEdgeId === edge.id ? '#475569' : '#94a3b8' },
+            ? { stroke: edge.color ?? '#334155', strokeWidth: 2.4 }
+            : { stroke: edge.color ?? '#94a3b8', strokeWidth: 1.6 },
       };
     });
   }, [edges, selectedEdgeId]);
@@ -195,7 +193,7 @@ const TopologyCanvas = () => {
           selectionMode={SelectionMode.Partial}
           fitView
           deleteKeyCode={null}
-          defaultEdgeOptions={{ type: 'separatedStep', style: { stroke: '#94a3b8', strokeWidth: 1.5 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' } }}
+          defaultEdgeOptions={{ type: 'separatedStep', style: { stroke: '#94a3b8', strokeWidth: 1.6 } }}
           onConnect={(connection: Connection) => {
             buildFutureSmartEdge(connection);
             addEdgeFromConnection(connection);

@@ -37,6 +37,7 @@ export interface DiagramSlice {
   updateZoneNodeSize: (zoneNodeId: string, size: { width: number; height: number }) => void;
   updateZoneNodeColor: (zoneNodeId: string, color: string) => void;
   updateNodeInstanceData: (nodeId: string, patch: Partial<AssetNodeData | ZoneNodeData>) => void;
+  updateEdgeColor: (edgeId: string, color: string) => void;
   removeNode: (nodeId: string) => void;
   removeEdge: (edgeId: string) => void;
   removeSelectedElement: () => void;
@@ -113,7 +114,7 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
   addEdgeFromConnection: (connection) => {
     if (!connection.source || !connection.target) return;
     get().pushHistoryCheckpoint();
-    set((state) => ({ edges: [...state.edges, { id: nanoid(10), source: connection.source!, target: connection.target! }] }));
+    set((state) => ({ edges: [...state.edges, { id: nanoid(10), source: connection.source!, target: connection.target!, color: '#94a3b8' }] }));
   },
 
   createNodeFromAsset: ({ assetId, position, instanceName }) => {
@@ -191,6 +192,10 @@ export const createDiagramSlice: StateCreator<AppStore, [], [], DiagramSlice> = 
   updateNodeInstanceData: (nodeId, patch) => {
     get().pushHistoryCheckpoint();
     set((state) => ({ nodes: state.nodes.map((n) => (n.id === nodeId ? { ...n, data: { ...n.data, ...patch } as typeof n.data } : n)) }));
+  },
+  updateEdgeColor: (edgeId, color) => {
+    get().pushHistoryCheckpoint();
+    set((state) => ({ edges: state.edges.map((edge) => (edge.id === edgeId ? { ...edge, color } : edge)) }));
   },
 
   removeNode: (nodeId) => {

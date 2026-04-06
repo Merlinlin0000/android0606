@@ -77,6 +77,7 @@ export interface DiagramEdge {
   source: string;
   target: string;
   label?: string;
+  color?: string;
 }
 
 export interface DiagramDocument {
