@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import AssetPool from './components/Sidebar/AssetPool';
 import TopologyCanvas from './components/Canvas/TopologyCanvas';
 import InspectorPanel from './components/Inspector/InspectorPanel';
@@ -11,6 +11,7 @@ const DIAGRAM_LOCAL_CACHE_KEY = 'assessor-blade-diagram-autosave-v1';
 
 const App = () => {
   useDiagramShortcuts();
+  const hasHydratedFromCacheRef = useRef(false);
   const importDocumentJson = useAppStore((state) => state.importDocumentJson);
   const diagramId = useAppStore((state) => state.diagramId);
   const diagramName = useAppStore((state) => state.diagramName);
@@ -25,13 +26,15 @@ const App = () => {
     if (typeof window === 'undefined') return;
 
     const cached = window.localStorage.getItem(DIAGRAM_LOCAL_CACHE_KEY);
-    if (!cached) return;
-
-    importDocumentJson(cached);
+    if (cached) {
+      importDocumentJson(cached);
+    }
+    hasHydratedFromCacheRef.current = true;
   }, [importDocumentJson]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (!hasHydratedFromCacheRef.current) return;
 
     const payload = JSON.stringify({
       version: diagramVersion,
