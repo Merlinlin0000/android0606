@@ -28,6 +28,10 @@ const App = () => {
     const cached = window.localStorage.getItem(DIAGRAM_LOCAL_CACHE_KEY);
     if (cached) {
       importDocumentJson(cached);
+      queueMicrotask(() => {
+        hasHydratedFromCacheRef.current = true;
+      });
+      return;
     }
     hasHydratedFromCacheRef.current = true;
   }, [importDocumentJson]);
