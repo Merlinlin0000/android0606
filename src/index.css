@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: only light;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  @apply bg-slate-50 text-slate-700 antialiased;
+}
+
+
+.react-flow__controls-button svg {
+  fill: #334155 !important;
+  color: #334155 !important;
+  stroke: #334155 !important;
+}
+
+.react-flow__minimap svg {
+  color: #334155;
+}
+
+/* 深色鼠标指针：解决浅色背景下默认白色指针不清晰的问题 */
+#topology-canvas-export,
+#topology-canvas-export * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%231e293b' stroke='%23ffffff' stroke-width='1.2' d='M3 2l7 17l2.6-6.1L19 10z'/%3E%3C/svg%3E") 2 2, auto;
+}
+
+#topology-canvas-export .react-flow__pane,
+#topology-canvas-export .react-flow__node {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%231e293b' stroke='%23ffffff' stroke-width='1.2' d='M3 2l7 17l2.6-6.1L19 10z'/%3E%3C/svg%3E") 2 2, auto;
+}
