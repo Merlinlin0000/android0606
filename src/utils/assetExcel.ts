@@ -26,35 +26,28 @@ export interface AssetExcelParseResult {
 }
 
 const canonicalTypeMap: Record<string, AssetType> = {
-  firewall: '防火墙',
   防火墙: '防火墙',
   日志审计: '日志审计',
-  logaudit: '日志审计',
   数据库审计: '数据库审计',
-  dbaudit: '数据库审计',
   堡垒机: '堡垒机',
-  bastion: '堡垒机',
   vpn: 'VPN',
+  VPN: 'VPN',
   ips: 'IPS',
+  IPS: 'IPS',
   ids: 'IDS',
+  IDS: 'IDS',
   edr: 'EDR',
+  EDR: 'EDR',
   上网行为管理: '上网行为管理',
   态势感知: '态势感知',
   探针: '探针',
-  switch: '交换机',
   交换机: '交换机',
-  router: '路由器',
   路由器: '路由器',
-  gateway: '网关',
   网关: '网关',
-  服务器: '单台服务器',
-  server: '单台服务器',
   单台服务器: '单台服务器',
   服务器集群: '服务器集群',
-  database: '数据库',
   数据库: '数据库',
   其他设备: '其他设备',
-  custom: '其他设备',
 };
 
 const normalize = (value: unknown) => String(value ?? '').trim();
@@ -220,14 +213,32 @@ export const downloadAssetExcelTemplate = () => {
   const guideRows = [
     ['使用说明', '内容'],
     ['支持的设备类型（选项）', supportedTypes.join('、')],
-    ['兼容英文输入', 'Firewall / Switch / Server / Database / Custom 等会自动映射为中文类型'],
-    ['设备类型填写建议', '优先使用中文标准选项，便于界面统一展示'],
+    ['模板约束', '设备类型列为单选下拉，请勿手填其他值'],
+    ['设备类型填写建议', '请仅使用下拉列表中固定选项'],
   ];
+  const optionRows = [['设备类型选项'], ...supportedTypes.map((type) => [type])];
 
   const sheet = XLSX.utils.aoa_to_sheet(rows);
   const guideSheet = XLSX.utils.aoa_to_sheet(guideRows);
+  const optionSheet = XLSX.utils.aoa_to_sheet(optionRows);
+  (sheet as XLSX.WorkSheet & { ['!dataValidation']?: unknown })['!dataValidation'] = [
+    {
+      type: 'list',
+      allowBlank: false,
+      sqref: 'C2:C500',
+      formulas: ['设备类型选项!$A$2:$A$19'],
+    },
+  ];
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, sheet, 'Assets');
   XLSX.utils.book_append_sheet(workbook, guideSheet, '说明');
+  XLSX.utils.book_append_sheet(workbook, optionSheet, '设备类型选项');
+  workbook.Workbook = {
+    Sheets: [
+      { name: 'Assets', Hidden: 0 },
+      { name: '说明', Hidden: 0 },
+      { name: '设备类型选项', Hidden: 1 },
+    ],
+  };
   XLSX.writeFile(workbook, 'assessor-blade-assets-template.xlsx');
 };
